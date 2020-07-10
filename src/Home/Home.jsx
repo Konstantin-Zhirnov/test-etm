@@ -19,12 +19,14 @@ const Home = () => {
             <h2>Ответы:</h2>
             <ol>
                 <li>Да. Приходилось.</li>
-                <li>Полгода точно</li>
-                <li>Функциональный компонент от компонента на основе класса, в первую очередь отличается методами жизненного цикла. У функционального компонента есть hoohk - useEffect. Также <b>This</b> и <b>стейт</b>.</li>
-                <li>с Material UI, пробовал Ant Design</li>
-                <li>Читал: <a href="https://habr.com/ru/company/redmadrobot/blog/252773/">Material Design: на Луну и обратно</a></li>
+                <li>Полгода точно.</li>
+                <li>Функциональный компонент от компонента на основе класса, в первую очередь отличается методами жизненного цикла. У функционального компонента есть hook - useEffect. Также <b>This</b> и <b>State</b>.</li>
+                <li>С Bootstrap и Material UI. Пробовал Ant Design.</li>
+                <li>Читал: <a href="https://habr.com/ru/company/redmadrobot/blog/252773/" >Material Design: на Луну и обратно</a></li>
                 <li>С Webpack не работал. Работал с Gulp. Create-react-app позволяет не вникать в работу сборщика.</li>
             </ol>
+
+            <h3><b>Ссылка на исходники: </b><a href="https://github.com/Konstantin-Zhirnov/test-etm">github.com</a></h3>
             </Container>
     )
 }

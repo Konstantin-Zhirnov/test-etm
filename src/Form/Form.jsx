@@ -6,6 +6,11 @@ import Button from '@material-ui/core/Button';
 
 const Form = ({ goods, fetchData, handleClose }) => {
 
+     
+    const styleH1 = window.screen.availWidth > 460
+    ? { 'fontSize': '2em' }
+    : { 'fontSize': '20px', 'textAlign': 'center' }
+
     // const [item_1, setItem_1] = useState('')
     const [item_2, setItem_2] = useState('')
     const [item_3, setItem_3] = useState('')
@@ -58,7 +63,7 @@ const Form = ({ goods, fetchData, handleClose }) => {
     return (
         <div >
             <div>
-                <h1>Добавление товара</h1>
+                <h1 style={styleH1}>Добавление товара</h1>
                 <form onSubmit={submitHandler}>
                     {
                         imputProps.map((item, index) => (<TextField

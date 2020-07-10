@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Form from '../Form/Form'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import Loader from '../UI/Loader/Loader'
+import { setGoods, setIsData } from '../store/actions/goods'
+import axios from '../axios/axioas-etm'
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -12,22 +17,11 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Redirect } from 'react-router-dom'
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import Loader from '../UI/Loader/Loader'
 import Modal from '@material-ui/core/Modal';
-import { setGoods, setIsData } from '../store/actions/goods'
-import axios from '../axios/axioas-etm'
 
 
-function getModalStyle() {  
-
-  return {
-    top: `10%`,
-    left: `calc(50% - 200px)`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   h2: {
@@ -38,19 +32,19 @@ const useStyles = makeStyles((theme) => ({
   tableContainer: {
     margin: "50px 0 100px",
   },
-  table: {
-    minWidth: 650
-  },
   tableRow: {
     cursor: "pointer",
     '&:hover': {
-        boxShadow: '0 1px 3px silver',
-        background: 'rgba(0, 0, 0, .01)'
+      boxShadow: '0 1px 3px silver',
+      background: 'rgba(0, 0, 0, .01)'
     }
-  }, 
-  img: {
-    width: '80px'
   },
+  td: {
+    fontSize: '0.8rem',
+    '@media screen and (maxWidth: 700px)': {
+      fontSize: '0.4rem',
+    }
+  },  
   fab: {
     position: 'fixed',
     bottom: theme.spacing(2),
@@ -58,15 +52,41 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     position: 'absolute',
-    width: 400,
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(2, 4, 3),    
   },
 }));
 
+
+const tdStyles = window.screen.availWidth > 700
+  ? ({ 'fontSize': '0.8rem' })
+  : (
+    window.screen.availWidth > 550
+      ? ({ 'fontSize': '0.6rem' })
+      : (
+        window.screen.availWidth > 400
+          ? ({ 'fontSize': '0.45rem', 'padding': '5px' })
+          : ({ 'fontSize': '0.2rem', 'padding': '2px' })
+      )
+  )
+const tdImgStyles = window.screen.availWidth > 400
+  ? { 'width': '80px' }
+  : { 'width': '50px' }
+
+const modalStyle = window.screen.availWidth > 460
+? ({ 'top': '10%', 'width': '400px', 'left': 'calc(50% - 200px)' })
+: ({ 'top': '5%', 'width': '280px', 'left': 'calc(50% - 140px)' })
+
 const Catalog = ({ goods, isData, setGoods, setIsData }) => {
+
+  const [isRedirect, setIsRedirect] = useState(false)
+  const [itemId, setItemId] = useState("")
+
+  const onclick = (id) => {
+    setIsRedirect(true)
+    setItemId(id)
+  }
 
   const fetchData = () => {
     axios.get('/goods.json').then(response => {
@@ -74,13 +94,15 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
       setIsData()
     })
   }
-
   useEffect(fetchData, []);
+
 
   const classes = useStyles();
 
-  const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
+  //********* Модальное окно ******************/
+
+  
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -91,10 +113,12 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
   };
 
   const body = (
-    <div style={modalStyle} className={classes.paper}>
+    <div  className={classes.paper} style={modalStyle}>
       <Form fetchData={fetchData} handleClose={handleClose} />
     </div>
   );
+
+  /********** Кнопка "Добавить" ****************/
 
   const fab =
   {
@@ -103,13 +127,7 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
     label: 'Add',
   }
 
-  const [isRedirect, setIsRedirect] = useState(false)
-  const [itemId, setItemId] = useState("")
 
-  const onclick = (id) => {
-    setIsRedirect(true)
-    setItemId(id)
-  }
   return (
     !isData
       ? <Loader />
@@ -125,22 +143,22 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
               <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Изображение</TableCell>
-                    <TableCell align="right">Название</TableCell>
-                    <TableCell align="right">Производитель</TableCell>
-                    <TableCell align="right">Количество</TableCell>
-                    <TableCell align="right">Цена</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell style={tdStyles} align="center">Название</TableCell>
+                    <TableCell style={tdStyles} align="center">Производитель</TableCell>
+                    <TableCell style={tdStyles} align="center">Количество</TableCell>
+                    <TableCell style={tdStyles} align="center">Цена</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {
                     goods.map((item, index) => (
                       <TableRow key={index} onClick={() => onclick(item.id)} className={classes.tableRow}>
-                        <TableCell component="th" scope="row"><img className={classes.img} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
-                        <TableCell align="right">{item.title}</TableCell>
-                        <TableCell align="right">{item.vendor}</TableCell>
-                        <TableCell align="right">{item.pack}</TableCell>
-                        <TableCell align="right">{item.price}</TableCell>
+                        <TableCell component="th" scope="row"><img style={tdImgStyles} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
+                        <TableCell style={tdStyles}>{item.title}</TableCell>
+                        <TableCell style={tdStyles} align="center">{item.vendor}</TableCell>
+                        <TableCell style={tdStyles} align="center">{item.pack}</TableCell>
+                        <TableCell style={tdStyles} align="center">{item.price}</TableCell>
                       </TableRow>
 
                     ))
@@ -152,6 +170,7 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
               {fab.icon}
             </Fab>
           </Container>
+
           <Modal
             open={open}
             onClose={handleClose}
@@ -163,6 +182,7 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
         </React.Fragment>
   )
 }
+
 
 function mapStateToProps(state) {
   return {
@@ -177,7 +197,5 @@ function mapDispatchToProps(dispatch) {
     setIsData: () => dispatch(setIsData())
   }
 }
-
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Catalog)
