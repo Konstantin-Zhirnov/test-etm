@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import Loader from '../UI/Loader/Loader'
 import { setGoods, setIsData } from '../store/actions/goods'
 import axios from '../axios/axioas-etm'
+import cn from 'classnames'
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
@@ -23,7 +24,7 @@ import Modal from '@material-ui/core/Modal';
 
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   h2: {
     fontSize: 'calc(18px + 2vw)',
     textAlign: 'center',
@@ -39,12 +40,24 @@ const useStyles = makeStyles((theme) => ({
       background: 'rgba(0, 0, 0, .01)'
     }
   },
-  td: {
-    fontSize: '0.8rem',
-    '@media screen and (maxWidth: 700px)': {
-      fontSize: '0.4rem',
-    }
-  },  
+  tdStyles: {
+    fontSize: '0.2rem',
+    padding: '2px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '0.8rem',
+      padding: '5px'
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1rem',
+      padding: '10px'
+    },
+  },
+  tdImgStyles: {
+    width: '50px',
+    [theme.breakpoints.up('sm')]: {
+      width: '80px',
+    },
+  },
   fab: {
     position: 'fixed',
     bottom: theme.spacing(2),
@@ -56,27 +69,36 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),    
   },
+  modalStyle: {
+    top: '5%',
+    width: '280px',
+    left: 'calc(50% - 140px)',
+    [theme.breakpoints.up('sm')]: {
+      top: '10%',
+      width: '400px',
+      left: 'calc(50% - 200px)'
+    },
+  }
 }));
 
 
-const tdStyles = window.screen.availWidth > 700
-  ? ({ 'fontSize': '0.8rem' })
-  : (
-    window.screen.availWidth > 550
-      ? ({ 'fontSize': '0.6rem' })
-      : (
-        window.screen.availWidth > 400
-          ? ({ 'fontSize': '0.45rem', 'padding': '5px' })
-          : ({ 'fontSize': '0.2rem', 'padding': '2px' })
-      )
-  )
-const tdImgStyles = window.screen.availWidth > 400
-  ? { 'width': '80px' }
-  : { 'width': '50px' }
-
-const modalStyle = window.screen.availWidth > 460
-? ({ 'top': '10%', 'width': '400px', 'left': 'calc(50% - 200px)' })
-: ({ 'top': '5%', 'width': '280px', 'left': 'calc(50% - 140px)' })
+// const tdStyles = window.screen.availWidth > 700
+//   ? ({ 'fontSize': '0.8rem' })
+//   : (
+//     window.screen.availWidth > 550
+//       ? ({ 'fontSize': '0.6rem' })
+//       : (
+//         window.screen.availWidth > 400
+//           ? ({ 'fontSize': '0.45rem', 'padding': '5px' })
+//           : ({ 'fontSize': '0.2rem', 'padding': '2px' })
+//       )
+//   )
+// const tdImgStyles = window.screen.availWidth > 400
+//   ? { 'width': '80px' }
+//   : { 'width': '50px' }
+// const modalStyle = window.screen.availWidth > 460
+// ? ({ 'top': '10%', 'width': '400px', 'left': 'calc(50% - 200px)' })
+// : ({ 'top': '5%', 'width': '280px', 'left': 'calc(50% - 140px)' })
 
 const Catalog = ({ goods, isData, setGoods, setIsData }) => {
 
@@ -113,7 +135,7 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
   };
 
   const body = (
-    <div  className={classes.paper} style={modalStyle}>
+    <div  className={cn(classes.paper, classes.modalStyle)}>
       <Form fetchData={fetchData} handleClose={handleClose} />
     </div>
   );
@@ -144,21 +166,21 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
                 <TableHead>
                   <TableRow>
                     <TableCell></TableCell>
-                    <TableCell style={tdStyles} align="center">Название</TableCell>
-                    <TableCell style={tdStyles} align="center">Производитель</TableCell>
-                    <TableCell style={tdStyles} align="center">Количество</TableCell>
-                    <TableCell style={tdStyles} align="center">Цена</TableCell>
+                    <TableCell className={classes.tdStyles} align="center">Название</TableCell>
+                    <TableCell className={classes.tdStyles} align="center">Производитель</TableCell>
+                    <TableCell className={classes.tdStyles} align="center">Количество</TableCell>
+                    <TableCell className={classes.tdStyles} align="center">Цена</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {
                     goods.map((item, index) => (
                       <TableRow key={index} onClick={() => onclick(item.id)} className={classes.tableRow}>
-                        <TableCell component="th" scope="row"><img style={tdImgStyles} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
-                        <TableCell style={tdStyles}>{item.title}</TableCell>
-                        <TableCell style={tdStyles} align="center">{item.vendor}</TableCell>
-                        <TableCell style={tdStyles} align="center">{item.pack}</TableCell>
-                        <TableCell style={tdStyles} align="center">{item.price}</TableCell>
+                        <TableCell component="th" scope="row"><img className={classes.tdImgStyles} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
+                        <TableCell className={classes.tdStyles}>{item.title}</TableCell>
+                        <TableCell className={classes.tdStyles} align="center">{item.vendor}</TableCell>
+                        <TableCell className={classes.tdStyles} align="center">{item.pack}</TableCell>
+                        <TableCell className={classes.tdStyles} align="center">{item.price}</TableCell>
                       </TableRow>
 
                     ))

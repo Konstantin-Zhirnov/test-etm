@@ -1,16 +1,25 @@
 import React, { useState } from 'react'
 import axios from '../axios/axioas-etm'
 import { connect } from 'react-redux'
+
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+    formH1: {
+        fontSize: '20px',
+        textAlign: 'center',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '2em',
+      },
+    },
+  }));
 
 const Form = ({ goods, fetchData, handleClose }) => {
 
-     
-    const styleH1 = window.screen.availWidth > 460
-    ? { 'fontSize': '2em' }
-    : { 'fontSize': '20px', 'textAlign': 'center' }
-
+    const classes = useStyles();
+ 
     // const [item_1, setItem_1] = useState('')
     const [item_2, setItem_2] = useState('')
     const [item_3, setItem_3] = useState('')
@@ -63,7 +72,7 @@ const Form = ({ goods, fetchData, handleClose }) => {
     return (
         <div >
             <div>
-                <h1 style={styleH1}>Добавление товара</h1>
+                <h1 className={classes.formH1}>Добавление товара</h1>
                 <form onSubmit={submitHandler}>
                     {
                         imputProps.map((item, index) => (<TextField
