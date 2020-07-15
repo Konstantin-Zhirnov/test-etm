@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Form from '../Form/Form'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import Loader from '../UI/Loader/Loader'
 import { fetchDataThunkCreator } from '../store/actions/goods'
 import cn from 'classnames'
@@ -66,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),    
+    padding: theme.spacing(2, 4, 3),
   },
   modalStyle: {
     top: '5%',
@@ -81,15 +80,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Catalog = ({ goods, isData, fetchData }) => {
-
-  const [isRedirect, setIsRedirect] = useState(false)
-  const [itemId, setItemId] = useState("")
-
-  const onclick = (id) => {
-    setIsRedirect(true)
-    setItemId(id)
-  }
+const Catalog = ({ goods, isData, fetchData, history }) => {
 
   useEffect(fetchData, []);
 
@@ -98,7 +89,7 @@ const Catalog = ({ goods, isData, fetchData }) => {
 
   //********* Модальное окно ******************/
 
-  
+
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -110,7 +101,7 @@ const Catalog = ({ goods, isData, fetchData }) => {
   };
 
   const body = (
-    <div  className={cn(classes.paper, classes.modalStyle)}>
+    <div className={cn(classes.paper, classes.modalStyle)}>
       <Form fetchData={fetchData} handleClose={handleClose} />
     </div>
   );
@@ -128,55 +119,51 @@ const Catalog = ({ goods, isData, fetchData }) => {
   return (
     !isData
       ? <Loader />
-      : isRedirect
+      : <React.Fragment>
+        <CssBaseline />
+        <Container>
+          <Typography component="h2" className={classes.h2}>Таблица продукции:</Typography>
+          <TableContainer component={Paper} className={classes.tableContainer}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell className={classes.tdStyles} align="center">Название</TableCell>
+                  <TableCell className={classes.tdStyles} align="center">Производитель</TableCell>
+                  <TableCell className={classes.tdStyles} align="center">Количество</TableCell>
+                  <TableCell className={classes.tdStyles} align="center">Цена</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  goods.map((item, index) => (
+                    <TableRow key={index} onClick={() => history.push(`/catalog/${item.id}`)} className={classes.tableRow}>
+                      <TableCell component="th" scope="row"><img className={classes.tdImgStyles} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
+                      <TableCell className={classes.tdStyles}>{item.title}</TableCell>
+                      <TableCell className={classes.tdStyles} align="center">{item.vendor}</TableCell>
+                      <TableCell className={classes.tdStyles} align="center">{item.pack}</TableCell>
+                      <TableCell className={classes.tdStyles} align="center">{item.price}</TableCell>
+                    </TableRow>
 
-        ? <Redirect to={`/catalog/${itemId}`} />
+                  ))
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Fab aria-label={fab.label} className={classes.fab} color={fab.color} onClick={handleOpen}>
+            {fab.icon}
+          </Fab>
+        </Container>
 
-        : <React.Fragment>
-          <CssBaseline />
-          <Container>
-            <Typography component="h2" className={classes.h2}>Таблица продукции:</Typography>
-            <TableContainer component={Paper} className={classes.tableContainer}>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell className={classes.tdStyles} align="center">Название</TableCell>
-                    <TableCell className={classes.tdStyles} align="center">Производитель</TableCell>
-                    <TableCell className={classes.tdStyles} align="center">Количество</TableCell>
-                    <TableCell className={classes.tdStyles} align="center">Цена</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {
-                    goods.map((item, index) => (
-                      <TableRow key={index} onClick={() => onclick(item.id)} className={classes.tableRow}>
-                        <TableCell component="th" scope="row"><img className={classes.tdImgStyles} src={item.src ? item.src : "/images/noImage.jpg"} alt={item.title} /></TableCell>
-                        <TableCell className={classes.tdStyles}>{item.title}</TableCell>
-                        <TableCell className={classes.tdStyles} align="center">{item.vendor}</TableCell>
-                        <TableCell className={classes.tdStyles} align="center">{item.pack}</TableCell>
-                        <TableCell className={classes.tdStyles} align="center">{item.price}</TableCell>
-                      </TableRow>
-
-                    ))
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Fab aria-label={fab.label} className={classes.fab} color={fab.color} onClick={handleOpen}>
-              {fab.icon}
-            </Fab>
-          </Container>
-
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {body}
-          </Modal>
-        </React.Fragment>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+      </React.Fragment>
   )
 }
 
@@ -188,4 +175,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, {fetchData: fetchDataThunkCreator})(Catalog)
+export default connect(mapStateToProps, { fetchData: fetchDataThunkCreator })(Catalog)
