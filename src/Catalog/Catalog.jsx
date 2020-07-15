@@ -81,24 +81,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-// const tdStyles = window.screen.availWidth > 700
-//   ? ({ 'fontSize': '0.8rem' })
-//   : (
-//     window.screen.availWidth > 550
-//       ? ({ 'fontSize': '0.6rem' })
-//       : (
-//         window.screen.availWidth > 400
-//           ? ({ 'fontSize': '0.45rem', 'padding': '5px' })
-//           : ({ 'fontSize': '0.2rem', 'padding': '2px' })
-//       )
-//   )
-// const tdImgStyles = window.screen.availWidth > 400
-//   ? { 'width': '80px' }
-//   : { 'width': '50px' }
-// const modalStyle = window.screen.availWidth > 460
-// ? ({ 'top': '10%', 'width': '400px', 'left': 'calc(50% - 200px)' })
-// : ({ 'top': '5%', 'width': '280px', 'left': 'calc(50% - 140px)' })
-
 const Catalog = ({ goods, isData, fetchData }) => {
 
   const [isRedirect, setIsRedirect] = useState(false)
