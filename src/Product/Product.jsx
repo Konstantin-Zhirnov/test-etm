@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -29,9 +30,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Product = ({ itemId, goods }) => {
+  const Product = ({ goods, ...props }) => {
 
     const classes = useStyles();
+
+    const itemId = props.match.params.id
         
     const product = goods.filter(item => Number(item.id) === Number(itemId)) 
     
