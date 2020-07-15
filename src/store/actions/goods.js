@@ -1,4 +1,5 @@
 import { FETCH_GOODS, SET_ITEM_COUNT, IS_DATA } from './actionTypes'
+import axios from '../../axios/axioas-etm'
 
 export function setGoods(goods) {
     return {
@@ -19,3 +20,13 @@ export function setIsData() {
         type: IS_DATA
     }
 }
+
+
+export const fetchDataThunkCreator = () => {
+    return (dispatch) => {
+    axios.get('/goods.json').then(response => {
+      dispatch(setGoods(response.data.rows));
+      dispatch(setIsData());
+    })
+  }
+} 

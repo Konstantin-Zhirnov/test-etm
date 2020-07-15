@@ -3,8 +3,7 @@ import Form from '../Form/Form'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import Loader from '../UI/Loader/Loader'
-import { setGoods, setIsData } from '../store/actions/goods'
-import axios from '../axios/axioas-etm'
+import { fetchDataThunkCreator } from '../store/actions/goods'
 import cn from 'classnames'
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -100,7 +99,7 @@ const useStyles = makeStyles(theme => ({
 // ? ({ 'top': '10%', 'width': '400px', 'left': 'calc(50% - 200px)' })
 // : ({ 'top': '5%', 'width': '280px', 'left': 'calc(50% - 140px)' })
 
-const Catalog = ({ goods, isData, setGoods, setIsData }) => {
+const Catalog = ({ goods, isData, fetchData }) => {
 
   const [isRedirect, setIsRedirect] = useState(false)
   const [itemId, setItemId] = useState("")
@@ -110,12 +109,6 @@ const Catalog = ({ goods, isData, setGoods, setIsData }) => {
     setItemId(id)
   }
 
-  const fetchData = () => {
-    axios.get('/goods.json').then(response => {
-      setGoods(response.data.rows);
-      setIsData()
-    })
-  }
   useEffect(fetchData, []);
 
 
@@ -213,11 +206,4 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setGoods: (goods) => dispatch(setGoods(goods)),
-    setIsData: () => dispatch(setIsData())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Catalog)
+export default connect(mapStateToProps, {fetchData: fetchDataThunkCreator})(Catalog)
