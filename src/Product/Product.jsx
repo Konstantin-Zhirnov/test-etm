@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -30,12 +30,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-  const Product = ({ goods, ...props }) => {
+  const Product = (props) => {
 
     const classes = useStyles();
 
     const itemId = props.match.params.id
-        
+    const goods = useSelector(state => state.goods.goods)        
     const product = goods.filter(item => Number(item.id) === Number(itemId)) 
     
 
@@ -72,12 +72,4 @@ const useStyles = makeStyles((theme) => ({
     )
 }
 
-
-function mapStateToProps(state) {
-    return {
-        goods: state.goods.goods
-    }
-}
-
-export default connect(mapStateToProps)(Product)
-
+export default Product

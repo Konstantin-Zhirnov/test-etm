@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Form from '../Form/Form'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../UI/Loader/Loader'
 import { fetchDataThunkCreator } from '../store/actions/goods'
 import cn from 'classnames'
@@ -80,10 +80,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Catalog = ({ goods, isData, fetchData, history }) => {
+const Catalog = ({ history }) => {
+
+  const goods = useSelector(state => state.goods.goods)
+  const isData = useSelector(state => state.goods.isData)
+  const dispatch = useDispatch()
+  const fetchData = () => dispatch(fetchDataThunkCreator())
 
   useEffect(fetchData, []);
-
 
   const classes = useStyles();
 
@@ -167,12 +171,4 @@ const Catalog = ({ goods, isData, fetchData, history }) => {
   )
 }
 
-
-function mapStateToProps(state) {
-  return {
-    goods: state.goods.goods,
-    isData: state.goods.isData
-  }
-}
-
-export default connect(mapStateToProps, { fetchData: fetchDataThunkCreator })(Catalog)
+export default Catalog

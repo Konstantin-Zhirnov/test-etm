@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from '../axios/axioas-etm'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -10,16 +10,17 @@ const useStyles = makeStyles(theme => ({
     formH1: {
         fontSize: '20px',
         textAlign: 'center',
-      [theme.breakpoints.up('sm')]: {
-        fontSize: '2em',
-      },
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '2em',
+        },
     },
-  }));
+}));
 
-const Form = ({ goods, fetchData, handleClose }) => {
+const Form = ({ fetchData, handleClose }) => {
 
+    const goods = useSelector(state => state.goods.goods)
     const classes = useStyles();
- 
+
     // const [item_1, setItem_1] = useState('')
     const [item_2, setItem_2] = useState('')
     const [item_3, setItem_3] = useState('')
@@ -99,13 +100,7 @@ const Form = ({ goods, fetchData, handleClose }) => {
     )
 }
 
-function mapStateToProps(state) {
-    return {
-        goods: state.goods.goods
-    }
-}
-
-export default connect(mapStateToProps)(Form)
+export default Form
 
 
 //**********************
