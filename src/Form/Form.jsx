@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import axios from '../axios/axioas-etm'
 import { useSelector } from 'react-redux'
+import * as Yup from "yup";
 
-import TextField from '@material-ui/core/TextField';
+import { Formik, Form, Field } from 'formik';
+import { TextField } from 'formik-material-ui';
 import Button from '@material-ui/core/Button';
+import { LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -14,44 +17,29 @@ const useStyles = makeStyles(theme => ({
             fontSize: '2em',
         },
     },
+    input: {
+        marginTop: "10px",
+        width: "100%"
+    },
+    button: {
+        marginTop: "20px"
+    }
 }));
 
-const Form = ({ fetchData, handleClose }) => {
+const AddProductForm = ({ fetchData, handleClose }) => {
 
     const goods = useSelector(state => state.goods.goods)
     const classes = useStyles();
 
-    // const [item_1, setItem_1] = useState('')
-    const [item_2, setItem_2] = useState('')
-    const [item_3, setItem_3] = useState('')
-    const [item_4, setItem_4] = useState('')
-    const [item_5, setItem_5] = useState('')
-    const [item_6, setItem_6] = useState('')
-
-    const resetValueForm = () => {
-        // setItem_1('')
-        setItem_2('')
-        setItem_3('')
-        setItem_4('')
-        setItem_5('')
-        setItem_6('')
-    }
-
-
     const imputProps = [
-        // { label: "Введите id", type: 'text', onChangeValue: e => { setItem_1(e.target.value) }, value: item_1 },
-        { label: "Название: ", type: 'text', onChangeValue: e => { setItem_2(e.target.value) }, value: item_2 },
-        { label: "Производитель: ", type: 'text', onChangeValue: e => { setItem_3(e.target.value) }, value: item_3 },
-        { label: "Количество: ", type: 'text', onChangeValue: e => { setItem_4(e.target.value) }, value: item_4 },
-        { label: "Цена: ", type: 'text', onChangeValue: e => { setItem_5(e.target.value) }, value: item_5 },
-        { label: "Ссылка на фото: ", type: 'text', onChangeValue: e => { setItem_6(e.target.value) }, value: item_6 }
+        { name: "title", label: "Название: ", type: 'text' },
+        { name: "vendor", label: "Производитель: ", type: 'text' },
+        { name: "pack", label: "Количество: ", type: 'number' },
+        { name: "price", label: "Цена: ", type: 'text' },
+        { name: "src", label: "Ссылка на фото: ", type: 'text' }
     ]
 
-    const submitHandler = event => {
-        event.preventDefault()
-    }
-
-    const createItem = () => {
+    const createItem = (values) => {
 
         const setRandomId = () => {
             return Math.floor(Math.random() * 100000)
@@ -59,48 +47,71 @@ const Form = ({ fetchData, handleClose }) => {
 
         const rows = [...goods, {
             "id": setRandomId(),
-            "title": item_2,
-            "vendor": item_3,
-            "pack": item_4,
-            "price": item_5,
-            "src": item_6
+            ...values
         }]
-        resetValueForm()
         handleClose()
         axios.put('/goods.json', { rows }).then(() => fetchData())
     }
 
+    const FormSchema = Yup.object().shape({
+        title: Yup.string()
+            .min(2, "минимальная длина - 2 символа")
+            .required("Поле обязательное для заполнения"),
+        vendor: Yup.string()
+            .min(2, "минимальная длина - 2 символа")
+            .required("Поле обязательное для заполнения"),
+        pack: Yup.number()
+            .required("Поле обязательное для заполнения"),
+        price: Yup.number()
+            .required("Поле обязательное для заполнения")
+    });
+
     return (
-        <div >
-            <div>
-                <h1 className={classes.formH1}>Добавление товара</h1>
-                <form onSubmit={submitHandler}>
-                    {
-                        imputProps.map((item, index) => (<TextField
-                            key={index}
-                            id="outlined-full-width"
-                            label={item.label}
-                            onChange={item.onChangeValue}
-                            value={item.value}
-                            style={{ margin: "20px 0" }}
-                            placeholder=""
-                            helperText=""
-                            fullWidth
-                            margin="normal"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
-                        />))
-                    }
-                    <Button variant="contained" color="primary" onClick={createItem}>Добавить</Button>
-                </form>
-            </div>
-        </div>
+        <>
+            <h1 className={classes.formH1}>Добавление товара</h1>
+            <Formik
+                initialValues={{
+                    title: '',
+                    vendor: '',
+                    pack: null,
+                    price: '',
+                    src: '',
+                }}
+                validationSchema={FormSchema}
+                validate={values => { }}
+                onSubmit={(values) => {
+                    createItem(values)
+                }}
+            >
+                {({ submitForm, isSubmitting }) => (
+                    <Form>
+                        {
+                            imputProps.map((item, index) => (<Field
+                                component={TextField}
+                                name={item.name}
+                                type={item.type}
+                                label={item.label}
+                                key={index}
+                                className={classes.input}
+                            />))
+                        }
+                        {isSubmitting && <LinearProgress />}
+                        <br />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            disabled={isSubmitting}
+                            onClick={submitForm}
+                        >Добавить</Button>
+                    </Form>
+                )}
+            </Formik>
+        </>
     )
 }
 
-export default Form
+export default AddProductForm
 
 
 //**********************

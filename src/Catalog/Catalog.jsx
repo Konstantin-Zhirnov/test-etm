@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Form from '../Form/Form'
+import AddProductForm from '../Form/Form'
 import { useSelector, useDispatch } from 'react-redux'
 import Loader from '../UI/Loader/Loader'
 import { fetchDataThunkCreator } from '../store/actions/goods'
@@ -106,7 +106,7 @@ const Catalog = ({ history }) => {
 
   const body = (
     <div className={cn(classes.paper, classes.modalStyle)}>
-      <Form fetchData={fetchData} handleClose={handleClose} />
+      <AddProductForm fetchData={fetchData} handleClose={handleClose} />
     </div>
   );
 
